@@ -15,13 +15,24 @@ public class MainClass extends Game implements InputProcessor {
 	SpriteBatch batch;
 	Texture img;
 	OrthographicCamera camera;
-	float x = 0, y = 0;
+	float x = 0, y = 0, aspect;
 	
 	@Override
 	public void create () {
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		aspect = (float) Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getWidth()/aspect);
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
+		aspect = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		aspect = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+		camera.viewportWidth = 1000;
+		camera.viewportHeight = 1000/aspect;
 	}
 
 	@Override
