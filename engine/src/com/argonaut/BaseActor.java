@@ -11,8 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class BaseActor extends Actor {
 
-    private Texture texture;
-    private TextureRegion region;
+    protected Texture texture;
+     protected TextureRegion region;
 
     public BaseActor(Texture texture, float x, float y, float width, float height){
         this.texture = texture;
@@ -37,6 +37,14 @@ public class BaseActor extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         batch.draw(region, getX(), getY(), getWidth(), getHeight());
+    }
+
+    public void resize(){
+
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 
     public void dispose(){
