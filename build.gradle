@@ -70,6 +70,7 @@ project(":core") {
 
 
     dependencies {
+        compile project(":engine")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         
     }
