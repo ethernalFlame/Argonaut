@@ -57,12 +57,10 @@ public class GameScreen extends Stage implements Screen {
         TileFactory.draw(tiles, getBatch(), delta);
         getBatch().end();
         getCamera().position.set(x,y,0);
-//        if (x<1000) {
-//            x++;
-//            y++;
-//        }
     }
-
+    public void updateCameraPos(int x, int y){
+        float tmpX = x-this.x;
+    }
     @Override
     public void resize(int width, int height) {
         System.out.println("resize");
