@@ -21,45 +21,7 @@ public class MainClass extends Game implements InputProcessor {
 	@Override
 	public void create () {
 		setScreen(new GameScreen(this));
-//		aspect = (float) Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-//		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getWidth()/aspect);
-//		batch = new SpriteBatch();
-//		img = new Texture("badlogic.jpg");
-//		aspect = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
 	}
-
-//	@Override
-//	public void resize(int width, int height) {
-//		super.resize(width, height);
-//		aspect = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-//		camera.viewportWidth = 1000;
-//		camera.viewportHeight = 1000/aspect;
-//	}
-//
-//	@Override
-//	public void render () {
-//		Gdx.input.setInputProcessor(this);
-//		Gdx.gl.glClearColor(1, 0, 0, 1);
-//		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//		batch.setProjectionMatrix(camera.combined);
-//		camera.update();
-//		batch.begin();
-//		batch.draw(img, 0, 0, 1000,1000);
-//		batch.end();
-//		camera.position.set(x,y,0);
-//		if (x<1000) {
-//			x++;
-//			y++;
-//		}
-//
-//	}
-
-//	@Override
-//	public void dispose () {
-//		batch.dispose();
-//		img.dispose();
-//	}
-
 	@Override
 	public boolean keyDown(int keycode) {
 		return false;

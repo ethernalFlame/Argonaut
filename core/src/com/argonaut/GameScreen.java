@@ -4,10 +4,8 @@ import com.argonaut.actors.Tile;
 import com.argonaut.factories.TileFactory;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,13 +15,17 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
  */
 
 public class GameScreen extends Stage implements Screen {
-    private BaseActor actor;
-//    OrthographicCamera camera;
-    float x = 0, y = 0, aspect;
+    float x = 0, y = 0, aspect, offsetX, offsetY, toPointX, toPointY;
     Vector3 vector3Pos = new Vector3();
     BaseActor currentActor;
     Tile[][] tiles;
-    public GameScreen(Game game){
+    private BaseActor actor;
+    boolean isCameraMoving, isCameraSummoned;
+    int countCameraMoves = 0;
+
+    private static final int cameraMovesPerSecond = 30;
+
+    public GameScreen(Game game) {
 
 
     }
@@ -35,14 +37,14 @@ public class GameScreen extends Stage implements Screen {
         System.out.println("show");
         actor = new BaseActor(new Texture("badlogic.jpg"), 0, 0, 1000, 1000);
         addActor(actor);
-        aspect = (float) Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-//        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getWidth()/aspect);
-        tiles = TileFactory.getTiles(10,10, new Tile(new Texture("tile.png"), 0,0, 64,64));
+        aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
+        tiles = TileFactory.getTiles(10, 10, new Tile(new Texture("tile.png"), 0, 0, 64, 64));
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
                 addActor(tiles[i][j]);
             }
         }
+
     }
 
     @Override
@@ -53,20 +55,37 @@ public class GameScreen extends Stage implements Screen {
         getBatch().setProjectionMatrix(getCamera().combined);
         getCamera().update();
         getBatch().begin();
-       // actor.draw(getBatch(),delta);
         TileFactory.draw(tiles, getBatch(), delta);
         getBatch().end();
-        getCamera().position.set(x,y,0);
+        updateCameraPos(x,y);
+        getCamera().position.set(x, y, 0);
     }
-    public void updateCameraPos(int x, int y){
-        float tmpX = x-this.x;
+
+    public void updateCameraPos(float x, float y) {
+        if (isCameraSummoned) {
+            if (isCameraMoving) {
+                offsetX = (x - this.x) / cameraMovesPerSecond;
+                offsetY = (y - this.y) / cameraMovesPerSecond;
+                isCameraMoving = false;
+            } else {
+                if (countCameraMoves < cameraMovesPerSecond) {
+                    this.x += offsetX;
+                    this.y += offsetY;
+                    countCameraMoves++;
+                } else {
+                    countCameraMoves = 0;
+                    isCameraSummoned = false;
+                }
+            }
+        }
     }
+
     @Override
     public void resize(int width, int height) {
         System.out.println("resize");
-        aspect = (float)Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+        aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         getCamera().viewportWidth = 1000;
-        getCamera().viewportHeight = 1000/aspect;
+        getCamera().viewportHeight = 1000 / aspect;
     }
 
     @Override
@@ -81,20 +100,31 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        		vector3Pos.set(getCamera().unproject(new Vector3(screenX, screenY, 0)));
-        		System.out.println("x: " + screenX + " y: " + screenY);
-        		System.out.println("matrix x: " + vector3Pos.x + " y: " + vector3Pos.y + " z: " + vector3Pos.z);
+        vector3Pos.set(getCamera().unproject(new Vector3(screenX, screenY, 0)));
+        System.out.println("x: " + screenX + " y: " + screenY);
+        System.out.println("matrix x: " + vector3Pos.x + " y: " + vector3Pos.y + " z: " + vector3Pos.z);
         try {
             currentActor = (BaseActor) hit(vector3Pos.x, vector3Pos.y, true);
 
-            if (currentActor!=null) {
+            if (currentActor != null) {
                 currentActor.print();
             }
+            //ТЕСТ ПЕРЕМЕЩЕНИЯ КАМЕРЫ
+            if (currentActor instanceof Tile) {
+                isCameraMoving = true;
+                isCameraSummoned = true;
+                toPointX = currentActor.getX();
+                toPointY = currentActor.getY();
+                updateCameraPos(toPointX, toPointY);
+
+            }
+            //ТЕСТ ПЕРЕМЕЩЕНИЯ КАМЕРЫ
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        		return super.touchDown(screenX, screenY, pointer, button);      
+        return super.touchDown(screenX, screenY, pointer, button);
     }
 
     @Override
