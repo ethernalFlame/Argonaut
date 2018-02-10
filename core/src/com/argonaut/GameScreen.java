@@ -1,5 +1,6 @@
 package com.argonaut;
 
+import com.argonaut.actors.Chest;
 import com.argonaut.actors.Tile;
 import com.argonaut.factories.TileFactory;
 import com.badlogic.gdx.Game;
@@ -19,9 +20,9 @@ public class GameScreen extends Stage implements Screen {
     Vector3 vector3Pos = new Vector3();
     BaseActor currentActor;
     Tile[][] tiles;
-    private BaseActor actor;
     boolean isCameraMoving, isCameraSummoned;
     int countCameraMoves = 0;
+    Chest chest;
 
     private static final int cameraMovesPerSecond = 30;
 
@@ -35,8 +36,7 @@ public class GameScreen extends Stage implements Screen {
         this.getCamera().viewportWidth = 1000;
         this.getCamera().viewportHeight = 1000;
         System.out.println("show");
-        actor = new BaseActor(new Texture("badlogic.jpg"), 0, 0, 1000, 1000);
-        addActor(actor);
+        chest = new Chest(144,144,32,32);
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         tiles = TileFactory.getTiles(10, 10, new Tile(new Texture("tile.png"), 0, 0, 64, 64));
         for (int i = 0; i < tiles.length; i++) {
@@ -44,7 +44,7 @@ public class GameScreen extends Stage implements Screen {
                 addActor(tiles[i][j]);
             }
         }
-
+        addActor(chest);
     }
 
     @Override
@@ -56,6 +56,7 @@ public class GameScreen extends Stage implements Screen {
         getCamera().update();
         getBatch().begin();
         TileFactory.draw(tiles, getBatch(), delta);
+        chest.draw(getBatch(), delta);
         getBatch().end();
         updateCameraPos(x,y);
         getCamera().position.set(x, y, 0);
@@ -107,7 +108,7 @@ public class GameScreen extends Stage implements Screen {
             currentActor = (BaseActor) hit(vector3Pos.x, vector3Pos.y, true);
 
             if (currentActor != null) {
-                currentActor.print();
+                currentActor.doAction();
             }
             //ТЕСТ ПЕРЕМЕЩЕНИЯ КАМЕРЫ
             if (currentActor instanceof Tile) {

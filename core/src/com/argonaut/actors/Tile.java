@@ -16,7 +16,7 @@ public class Tile extends BaseActor implements Cloneable{
     }
 
     @Override
-    public void print() {
+    public void doAction() {
         System.out.println("Я ПЛИТКА");
     }
 }

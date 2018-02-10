@@ -29,7 +29,7 @@ public class BaseActor extends Actor {
     public void act(float delta) {
         super.act(delta);
     }
-    public void print(){
+    public void doAction(){
         System.out.println("ITS ME");
     }
 
