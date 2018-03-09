@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * Created by vladi on 08.02.2018.
  */
 
-public class BaseActor extends Actor {
+public abstract class BaseActor extends Actor {
 
     protected Texture texture;
      protected TextureRegion region;
@@ -29,9 +29,7 @@ public class BaseActor extends Actor {
     public void act(float delta) {
         super.act(delta);
     }
-    public void doAction(){
-        System.out.println("ITS ME");
-    }
+    public abstract void doAction();
 
     @Override
     public void draw(Batch batch, float parentAlpha) {

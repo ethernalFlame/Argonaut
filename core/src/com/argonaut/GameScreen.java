@@ -1,6 +1,8 @@
 package com.argonaut;
 
 import com.argonaut.actors.Chest;
+import com.argonaut.actors.Enemy;
+import com.argonaut.actors.Protagonist;
 import com.argonaut.actors.Tile;
 import com.argonaut.factories.TileFactory;
 import com.badlogic.gdx.Game;
@@ -23,6 +25,8 @@ public class GameScreen extends Stage implements Screen {
     boolean isCameraMoving, isCameraSummoned;
     int countCameraMoves = 0;
     Chest chest;
+    Protagonist protagonist;
+    Enemy enemy;
 
     private static final int cameraMovesPerSecond = 30;
 
@@ -45,6 +49,10 @@ public class GameScreen extends Stage implements Screen {
             }
         }
         addActor(chest);
+        protagonist = new Protagonist(0,0, 64, 64, 64);
+        addActor(protagonist);
+        enemy = new Enemy(256,256,64,64, protagonist);
+        addActor(enemy);
     }
 
     @Override
@@ -56,6 +64,8 @@ public class GameScreen extends Stage implements Screen {
         getCamera().update();
         getBatch().begin();
         TileFactory.draw(tiles, getBatch(), delta);
+        protagonist.draw(getBatch(), delta);
+        enemy.draw(getBatch(), delta);
         chest.draw(getBatch(), delta);
         getBatch().end();
         updateCameraPos(x,y);
@@ -105,6 +115,7 @@ public class GameScreen extends Stage implements Screen {
         System.out.println("x: " + screenX + " y: " + screenY);
         System.out.println("matrix x: " + vector3Pos.x + " y: " + vector3Pos.y + " z: " + vector3Pos.z);
         try {
+
             currentActor = (BaseActor) hit(vector3Pos.x, vector3Pos.y, true);
 
             if (currentActor != null) {
@@ -112,11 +123,13 @@ public class GameScreen extends Stage implements Screen {
             }
             //ТЕСТ ПЕРЕМЕЩЕНИЯ КАМЕРЫ
             if (currentActor instanceof Tile) {
+                protagonist.move((Tile) currentActor);
+                enemy.doAction();
                 isCameraMoving = true;
                 isCameraSummoned = true;
                 toPointX = currentActor.getX();
                 toPointY = currentActor.getY();
-                updateCameraPos(toPointX, toPointY);
+                updateCameraPos(toPointX + currentActor.getWidth()/2, toPointY + currentActor.getHeight()/2);
 
             }
             //ТЕСТ ПЕРЕМЕЩЕНИЯ КАМЕРЫ
