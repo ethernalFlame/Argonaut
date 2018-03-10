@@ -40,9 +40,9 @@ public class GameScreen extends Stage implements Screen {
         this.getCamera().viewportWidth = 1000;
         this.getCamera().viewportHeight = 1000;
         System.out.println("show");
-        chest = new Chest(144,144,32,32);
+        chest = new Chest(144,144,64,64);
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-        tiles = TileFactory.getTiles(10, 10, new Tile(new Texture("tile.png"), 0, 0, 64, 64));
+        tiles = TileFactory.getTiles(10, 10, new Tile(new Texture("tile_clear.png"), 0, 0, 64, 64));
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
                 addActor(tiles[i][j]);
@@ -121,17 +121,22 @@ public class GameScreen extends Stage implements Screen {
             if (currentActor != null) {
                 currentActor.doAction();
             }
+
             //ТЕСТ ПЕРЕМЕЩЕНИЯ КАМЕРЫ
-            if (currentActor instanceof Tile) {
-                protagonist.move((Tile) currentActor);
+            if (currentActor instanceof Tile&&!currentActor.isOccupied()) {
+                protagonist.move (currentActor);
                 enemy.doAction();
                 isCameraMoving = true;
                 isCameraSummoned = true;
                 toPointX = currentActor.getX();
                 toPointY = currentActor.getY();
                 updateCameraPos(toPointX + currentActor.getWidth()/2, toPointY + currentActor.getHeight()/2);
-
             }
+//            if (currentActor instanceof Enemy){
+//                protagonist.attack((Enemy) currentActor);
+//
+//
+//            }
             //ТЕСТ ПЕРЕМЕЩЕНИЯ КАМЕРЫ
 
         } catch (Exception e) {

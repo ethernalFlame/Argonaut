@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 public class Chest extends BaseActor {
     public Chest(float x, float y, float width, float height) {
         super(new Texture("chest.png"), x, y, width, height);
+        setOccupied(true);
     }
 
     @Override

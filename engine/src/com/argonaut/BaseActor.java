@@ -12,9 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public abstract class BaseActor extends Actor {
 
     protected Texture texture;
-     protected TextureRegion region;
+    protected TextureRegion region;
+    private boolean isOccupied = false;
 
-    public BaseActor(Texture texture, float x, float y, float width, float height){
+    public BaseActor(Texture texture, float x, float y, float width, float height) {
         this.texture = texture;
         region = new TextureRegion(texture);
         this.setX(x);
@@ -25,10 +26,19 @@ public abstract class BaseActor extends Actor {
         this.setOriginY(0);
     }
 
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
+    }
+
     @Override
     public void act(float delta) {
         super.act(delta);
     }
+
     public abstract void doAction();
 
     @Override
@@ -37,7 +47,7 @@ public abstract class BaseActor extends Actor {
         batch.draw(region, getX(), getY(), getWidth(), getHeight());
     }
 
-    public void resize(){
+    public void resize() {
 
     }
 
@@ -45,7 +55,7 @@ public abstract class BaseActor extends Actor {
         return texture;
     }
 
-    public void dispose(){
+    public void dispose() {
         texture.dispose();
     }
 }
