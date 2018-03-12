@@ -13,12 +13,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+import java.util.ArrayList;
+
 /**
  * Created by vladi on 06.02.2018.
  */
 
 public class GameScreen extends Stage implements Screen {
-    float x = 0, y = 0, aspect, offsetX, offsetY, toPointX, toPointY;
+    float x = 0, y = 0, aspect, offsetX, offsetY, toPointX, toPointY, cameraHeight, cameraWidth;
     Vector3 vector3Pos = new Vector3();
     BaseActor currentActor;
     Tile[][] tiles;
@@ -27,6 +29,10 @@ public class GameScreen extends Stage implements Screen {
     Chest chest;
     Protagonist protagonist;
     Enemy enemy;
+    ArrayList<Enemy> enemies;
+    float CAMERA_WIDTH = 12f;
+    float CAMERA_HEIGHT = 10f;
+
 
     private static final int cameraMovesPerSecond = 30;
 
@@ -37,9 +43,7 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public void show() {
-        this.getCamera().viewportWidth = 1000;
-        this.getCamera().viewportHeight = 1000;
-        System.out.println("show");
+
         chest = new Chest(144,144,64,64);
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         tiles = TileFactory.getTiles(10, 10, new Tile(new Texture("tile_clear.png"), 0, 0, 64, 64));
@@ -48,11 +52,17 @@ public class GameScreen extends Stage implements Screen {
                 addActor(tiles[i][j]);
             }
         }
-        addActor(chest);
         protagonist = new Protagonist(0,0, 64, 64, 64);
         addActor(protagonist);
         enemy = new Enemy(256,256,64,64, protagonist);
-        addActor(enemy);
+        enemies = new ArrayList<Enemy>();
+        enemies.add(enemy);
+        chest.setX(tiles[0][2].getX());
+        chest.setY(tiles[0][2].getY());
+        addActor(chest);
+        for (int i = 0; i < enemies.size(); i++) {
+            addActor(enemies.get(i));
+        }
     }
 
     @Override
@@ -61,11 +71,17 @@ public class GameScreen extends Stage implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         getBatch().setProjectionMatrix(getCamera().combined);
+    //    System.out.println(getCamera().viewportHeight + " " + getCamera().viewportWidth);
+      //  getCamera().viewportHeight = (float) (cameraHeight*1);
+       // getCamera().viewportWidth = (float) (cameraWidth*1);
+
         getCamera().update();
         getBatch().begin();
         TileFactory.draw(tiles, getBatch(), delta);
         protagonist.draw(getBatch(), delta);
-        enemy.draw(getBatch(), delta);
+        for (int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).draw(getBatch(), delta);
+        }
         chest.draw(getBatch(), delta);
         getBatch().end();
         updateCameraPos(x,y);
@@ -93,10 +109,21 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public void resize(int width, int height) {
+       // cameraHeight = getCamera().viewportHeight;
+        //cameraWidth = getCamera().viewportWidth;
         System.out.println("resize");
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-        getCamera().viewportWidth = 1000;
-        getCamera().viewportHeight = 1000 / aspect;
+        getCamera().viewportWidth = width;
+        getCamera().viewportHeight = width / aspect;
+        System.out.println(tiles[0][0].getWidth() + " : " + tiles[0][0].getHeight());
+        System.out.println(aspect);
+        //float aspect2 = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+
+//        CAMERA_WIDTH =  CAMERA_HEIGHT* Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
+//        float ppuX = (float)Gdx.graphics.getWidth() / CAMERA_WIDTH;
+//        float ppuY = (float)Gdx.graphics.getHeight() / CAMERA_HEIGHT;
+//        tiles[0][0].setWidth(ppuX);
+//        tiles[0][0].setHeight(ppuY);
     }
 
     @Override
@@ -109,40 +136,32 @@ public class GameScreen extends Stage implements Screen {
 
     }
 
+    public void moveCamera(){
+        isCameraMoving = true;
+        isCameraSummoned = true;
+        updateCameraPos(protagonist.getX() + currentActor.getWidth()/2, protagonist.getY() + currentActor.getHeight() / 2);
+    }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         vector3Pos.set(getCamera().unproject(new Vector3(screenX, screenY, 0)));
-        System.out.println("x: " + screenX + " y: " + screenY);
-        System.out.println("matrix x: " + vector3Pos.x + " y: " + vector3Pos.y + " z: " + vector3Pos.z);
         try {
-
             currentActor = (BaseActor) hit(vector3Pos.x, vector3Pos.y, true);
-
-            if (currentActor != null) {
-                currentActor.doAction();
-            }
-
-            //ТЕСТ ПЕРЕМЕЩЕНИЯ КАМЕРЫ
-            if (currentActor instanceof Tile&&!currentActor.isOccupied()) {
-                protagonist.move (currentActor);
-                enemy.doAction();
-                isCameraMoving = true;
-                isCameraSummoned = true;
-                toPointX = currentActor.getX();
-                toPointY = currentActor.getY();
-                updateCameraPos(toPointX + currentActor.getWidth()/2, toPointY + currentActor.getHeight()/2);
-            }
-//            if (currentActor instanceof Enemy){
-//                protagonist.attack((Enemy) currentActor);
-//
-//
-//            }
-            //ТЕСТ ПЕРЕМЕЩЕНИЯ КАМЕРЫ
-
-        } catch (Exception e) {
+                protagonist.doAction(currentActor);
+                if (protagonist.isTurnEnd()) {
+                    for (int i = 0; i < enemies.size(); i++) {
+                        enemies.get(i).doAction();
+                        if (enemies.get(i).getHp()<=0){
+                            enemies.get(i).dispose();
+                            enemies.remove(i);
+                        }
+                    }
+                    moveCamera();
+                    protagonist.setTurnEnd(false);
+                }
+            } catch (Exception e) {
             e.printStackTrace();
         }
-
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -150,6 +169,4 @@ public class GameScreen extends Stage implements Screen {
     public void hide() {
 
     }
-
-
 }
