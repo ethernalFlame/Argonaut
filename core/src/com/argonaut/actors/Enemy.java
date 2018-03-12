@@ -2,14 +2,17 @@ package com.argonaut.actors;
 
 import com.argonaut.BaseActor;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
  * Created by vladi on 12.02.2018.
  */
 
 public class Enemy extends BaseActor {
-    private float hp, damage;
+    private float hp, damage, hpPosX, hpPosY, hpAspect;
     private Protagonist protagonist;
+    private Texture hpLine;
 
     public Enemy(float x, float y, float width, float height, Protagonist protagonist) {
         super(new Texture("enemy_test.png"), x, y, width, height);
@@ -17,6 +20,7 @@ public class Enemy extends BaseActor {
         setOccupied(true);
         hp = 100;
         damage = 10;
+        hpLine = new Texture("hp_line.png");
     }
 
     public float getHp() {
@@ -38,6 +42,8 @@ public class Enemy extends BaseActor {
     @Override
     public void doAction() {
         moveToProtagonist();
+        if (hp <=0)
+            dispose();
     }
 
     public void findNearestDoor() {
@@ -61,13 +67,11 @@ public class Enemy extends BaseActor {
             else if (tmpY > 0)
                 this.setY(getY() - getHeight());
         }
-        if (hp <=0)
-            dispose();
+
     }
     private boolean checkProtagonistInAttackRange() {
         if (Math.abs(protagonist.getX() - this.getX()) <= getWidth()) {
             if (Math.abs(protagonist.getY() - this.getY()) <= getHeight()) {
-             //   attack(protagonist);
                 return true;
             }
         }
@@ -80,4 +84,21 @@ public class Enemy extends BaseActor {
         if (protagonist.getHp()<=0)
             protagonist.dispose();
     }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        hpPosX = getX();
+        hpPosY = (float) (getX() + getHeight() + getHeight()*0.1);
+        hpAspect = (float) (hp*0.01*getWidth());
+        batch.draw(hpLine, hpPosX, hpPosY, hpAspect, (float) (getHeight()*0.1));
+    }
+
+    @Override
+    public void dispose() {
+        remove();
+        setOccupied(false);
+        super.dispose();
+    }
+
 }
