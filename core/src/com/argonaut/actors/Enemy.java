@@ -3,7 +3,6 @@ package com.argonaut.actors;
 import com.argonaut.BaseActor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
  * Created by vladi on 12.02.2018.
@@ -89,7 +88,7 @@ public class Enemy extends BaseActor {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         hpPosX = getX();
-        hpPosY = (float) (getX() + getHeight() + getHeight()*0.1);
+        hpPosY = (float) (getY() + getHeight() + getHeight()*0.1);
         hpAspect = (float) (hp*0.01*getWidth());
         batch.draw(hpLine, hpPosX, hpPosY, hpAspect, (float) (getHeight()*0.1));
     }

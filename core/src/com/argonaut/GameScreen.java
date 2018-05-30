@@ -4,7 +4,9 @@ import com.argonaut.actors.Chest;
 import com.argonaut.actors.Enemy;
 import com.argonaut.actors.Protagonist;
 import com.argonaut.actors.Tile;
+import com.argonaut.actors.Wall;
 import com.argonaut.factories.TileFactory;
+import com.argonaut.factories.WallFactory;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -28,8 +30,9 @@ public class GameScreen extends Stage implements Screen {
     int countCameraMoves = 0;
     Chest chest;
     Protagonist protagonist;
-    Enemy enemy;
+    Wall wall;
     ArrayList<Enemy> enemies;
+    ArrayList<Wall> walls;
     float CAMERA_WIDTH = 12f;
     float CAMERA_HEIGHT = 10f;
 
@@ -43,7 +46,7 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public void show() {
-
+        wall = new Wall(new Texture("wall_test.png"), 0, 64, 64,64);
         chest = new Chest(144,144,64,64);
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         tiles = TileFactory.getTiles(10, 10, new Tile(new Texture("tile_clear.png"), 0, 0, 64, 64));
@@ -54,14 +57,17 @@ public class GameScreen extends Stage implements Screen {
         }
         protagonist = new Protagonist(0,0, 64, 64, 64);
         addActor(protagonist);
-        enemy = new Enemy(256,256,64,64, protagonist);
         enemies = new ArrayList<Enemy>();
-        enemies.add(enemy);
+        enemies.add(new Enemy(256,256,64,64, protagonist));
         chest.setX(tiles[0][2].getX());
         chest.setY(tiles[0][2].getY());
         addActor(chest);
         for (int i = 0; i < enemies.size(); i++) {
             addActor(enemies.get(i));
+        }
+        walls = WallFactory.getWallsAroundRoom(tiles);
+        for (int i = 0; i < walls.size(); i++) {
+            addActor(walls.get(i));
         }
     }
 
@@ -71,10 +77,6 @@ public class GameScreen extends Stage implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         getBatch().setProjectionMatrix(getCamera().combined);
-    //    System.out.println(getCamera().viewportHeight + " " + getCamera().viewportWidth);
-      //  getCamera().viewportHeight = (float) (cameraHeight*1);
-       // getCamera().viewportWidth = (float) (cameraWidth*1);
-
         getCamera().update();
         getBatch().begin();
         TileFactory.draw(tiles, getBatch(), delta);
@@ -82,7 +84,11 @@ public class GameScreen extends Stage implements Screen {
         for (int i = 0; i < enemies.size(); i++) {
             enemies.get(i).draw(getBatch(), delta);
         }
+        for (int i = 0; i < walls.size(); i++) {
+            walls.get(i).draw(getBatch(),delta);
+        }
         chest.draw(getBatch(), delta);
+       // wall.draw(getBatch(),delta);
         getBatch().end();
         updateCameraPos(x,y);
         getCamera().position.set(x, y, 0);
@@ -109,21 +115,12 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public void resize(int width, int height) {
-       // cameraHeight = getCamera().viewportHeight;
-        //cameraWidth = getCamera().viewportWidth;
         System.out.println("resize");
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         getCamera().viewportWidth = width;
         getCamera().viewportHeight = width / aspect;
         System.out.println(tiles[0][0].getWidth() + " : " + tiles[0][0].getHeight());
         System.out.println(aspect);
-        //float aspect2 = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-
-//        CAMERA_WIDTH =  CAMERA_HEIGHT* Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-//        float ppuX = (float)Gdx.graphics.getWidth() / CAMERA_WIDTH;
-//        float ppuY = (float)Gdx.graphics.getHeight() / CAMERA_HEIGHT;
-//        tiles[0][0].setWidth(ppuX);
-//        tiles[0][0].setHeight(ppuY);
     }
 
     @Override

@@ -2,18 +2,21 @@ package com.argonaut.actors;
 
 import com.argonaut.BaseActor;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 
 public class Protagonist extends BaseActor {
     private float range;
     private float hp, damage;
+    private boolean turnEnd = false;
+
 
     public Protagonist(float x, float y, float width, float height, float range) {
         super(new Texture("argonaut_hero.png"), x, y, width, height);
         this.range = range;
         setOccupied(true);
         hp = 100;
-        damage = 10;
+        damage = 20;
     }
 
     public float getHp() {
@@ -34,26 +37,45 @@ public class Protagonist extends BaseActor {
 
     public void move(BaseActor actor) {
         if (Math.abs(actor.getX() - this.getX()) <= range && Math.abs(actor.getY() - this.getY()) <= range) {
-            if (actor instanceof Enemy) {
-                attack((Enemy) actor);
-                System.out.println("HERO ATTACK ENEMY: " + ((Enemy) actor).getHp());
-            } else {
-            this.setX(actor.getX());
-            this.setY(actor.getY());
-            }
+                this.setX(actor.getX());
+                this.setY(actor.getY());
+                turnEnd = true;
         }
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
     }
 
     @Override
     public void doAction() {
 
+    }
 
+    public void doAction(BaseActor actor) {
+        if (actor instanceof Tile && !actor.isOccupied())
+            move(actor);
+        else if (actor instanceof Enemy)
+            attack((Enemy) actor);
+        else actor.doAction();
     }
-    public void attack(Enemy enemy){
+
+    public boolean isTurnEnd() {
+        return turnEnd;
+    }
+
+    public void setTurnEnd(boolean turnEnd) {
+        this.turnEnd = turnEnd;
+    }
+
+    public void attack(Enemy enemy) {
         enemy.setHp(enemy.getHp() - damage);
-        if (enemy.getHp()<=0)
-            enemy.dispose();
+        if (enemy.getHp() <= 0){
+            }
+        turnEnd = true;
     }
+
         /*АЛГОРИТМ ПОИСКА ПУТИ:
         СНАЧАЛА ИЩЕМ КООРДИНАТЫ ПРОТОГОНИСТА
         ЗАТЕМ СРАВНИВАЕМ КООРДИНАТЫ ПРОТИВНИКА И ГЕРОЯ
