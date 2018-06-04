@@ -69,6 +69,7 @@ public class GameScreen extends Stage implements Screen {
         for (int i = 0; i < walls.size(); i++) {
             addActor(walls.get(i));
         }
+        getCamera().position.set(x, y, 0);
     }
 
     @Override
@@ -88,7 +89,6 @@ public class GameScreen extends Stage implements Screen {
             walls.get(i).draw(getBatch(),delta);
         }
         chest.draw(getBatch(), delta);
-       // wall.draw(getBatch(),delta);
         getBatch().end();
         updateCameraPos(x,y);
         getCamera().position.set(x, y, 0);
@@ -99,6 +99,7 @@ public class GameScreen extends Stage implements Screen {
             if (isCameraMoving) {
                 offsetX = (x - this.x) / cameraMovesPerSecond;
                 offsetY = (y - this.y) / cameraMovesPerSecond;
+                countCameraMoves = 0;
                 isCameraMoving = false;
             } else {
                 if (countCameraMoves < cameraMovesPerSecond) {
@@ -115,12 +116,9 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        System.out.println("resize");
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-        getCamera().viewportWidth = width;
-        getCamera().viewportHeight = width / aspect;
-        System.out.println(tiles[0][0].getWidth() + " : " + tiles[0][0].getHeight());
-        System.out.println(aspect);
+        getCamera().viewportWidth = 384;
+        getCamera().viewportHeight = 384 / aspect;
     }
 
     @Override
