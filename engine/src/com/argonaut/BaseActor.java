@@ -13,7 +13,7 @@ public abstract class BaseActor extends Actor {
 
     protected Texture texture;
     protected TextureRegion region;
-    private boolean isOccupied = false;
+    protected boolean isOccupied = false, isStatic;
 
     public BaseActor(Texture texture, float x, float y, float width, float height) {
         this.texture = texture;

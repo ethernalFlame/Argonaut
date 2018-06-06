@@ -23,6 +23,7 @@ import java.util.ArrayList;
  */
 
 public class GameScreen extends Stage implements Screen {
+    private static final int cameraMovesPerSecond = 30;
     float x = 0, y = 0, aspect, offsetX, offsetY, toPointX, toPointY, cameraHeight, cameraWidth;
     Vector3 vector3Pos = new Vector3();
     BaseActor currentActor;
@@ -35,9 +36,6 @@ public class GameScreen extends Stage implements Screen {
     ArrayList<Enemy> enemies;
     ArrayList<Wall> walls;
     InventoryIcon inventoryIcon;
-
-
-    private static final int cameraMovesPerSecond = 30;
 
     public GameScreen(Game game) {
 
@@ -165,9 +163,16 @@ public class GameScreen extends Stage implements Screen {
         System.out.println(inventoryIcon.getX() + " " + inventoryIcon.getY());
 
         try {
-            currentActor = (BaseActor) hit(vector3Pos.x, vector3Pos.y, true);
+            currentActor = (BaseActor) hit(tmp.x, tmp.y, true);
+            if (currentActor != null && currentActor.isStatic)
                 protagonist.doAction(currentActor);
-                if (protagonist.isTurnEnd()) {
+            else {
+                currentActor = (BaseActor) hit(vector3Pos.x, vector3Pos.y, true);
+                if (!currentActor.isStatic)
+                    protagonist.doAction(currentActor);
+            }
+
+            if (protagonist.isTurnEnd()) {
                     for (int i = 0; i < enemies.size(); i++) {
                         enemies.get(i).doAction();
                         if (enemies.get(i).getHp()<=0){

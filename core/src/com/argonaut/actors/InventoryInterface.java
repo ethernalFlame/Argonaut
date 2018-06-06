@@ -12,6 +12,7 @@ public class InventoryInterface extends BaseActor{
     public boolean interfaceFlag = false;
     public InventoryInterface(Texture texture, float x, float y, float width, float height) {
         super(texture, x, y, width, height);
+        isStatic = true;
     }
 
     @Override
