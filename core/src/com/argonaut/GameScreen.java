@@ -2,6 +2,7 @@ package com.argonaut;
 
 import com.argonaut.actors.Chest;
 import com.argonaut.actors.Enemy;
+import com.argonaut.actors.InventoryIcon;
 import com.argonaut.actors.Protagonist;
 import com.argonaut.actors.Tile;
 import com.argonaut.actors.Wall;
@@ -33,8 +34,7 @@ public class GameScreen extends Stage implements Screen {
     Wall wall;
     ArrayList<Enemy> enemies;
     ArrayList<Wall> walls;
-    float CAMERA_WIDTH = 12f;
-    float CAMERA_HEIGHT = 10f;
+    InventoryIcon inventoryIcon;
 
 
     private static final int cameraMovesPerSecond = 30;
@@ -69,6 +69,8 @@ public class GameScreen extends Stage implements Screen {
         for (int i = 0; i < walls.size(); i++) {
             addActor(walls.get(i));
         }
+        inventoryIcon = new InventoryIcon(50,50,30,30);
+        addActor(inventoryIcon);
         getCamera().position.set(x, y, 0);
     }
 
@@ -77,6 +79,7 @@ public class GameScreen extends Stage implements Screen {
         Gdx.input.setInputProcessor(this);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         getBatch().setProjectionMatrix(getCamera().combined);
         getCamera().update();
         getBatch().begin();
@@ -92,6 +95,13 @@ public class GameScreen extends Stage implements Screen {
         getBatch().end();
         updateCameraPos(x,y);
         getCamera().position.set(x, y, 0);
+
+        //ЭТО ШОБ НЕ В МИРОВЫХ КООРДИНАТАХ, А В СКРИНОВЫХ
+        getBatch().setProjectionMatrix(getCamera().projection);
+        getBatch().begin();
+        inventoryIcon.draw(getBatch(), delta);
+        getBatch().end();
+
     }
 
     public void updateCameraPos(float x, float y) {
@@ -119,6 +129,12 @@ public class GameScreen extends Stage implements Screen {
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         getCamera().viewportWidth = 384;
         getCamera().viewportHeight = 384 / aspect;
+        inventoryIcon.setX(getCamera().viewportWidth/2 - 30);
+        inventoryIcon.setY(getCamera().viewportHeight/2 - 30);
+
+
+        inventoryIcon.inventoryInterface.setX(getCamera().viewportWidth/2 - 96);
+        inventoryIcon.inventoryInterface.setY(getCamera().viewportHeight/2 - 384);
     }
 
     @Override
@@ -140,6 +156,14 @@ public class GameScreen extends Stage implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         vector3Pos.set(getCamera().unproject(new Vector3(screenX, screenY, 0)));
+
+
+        //ЭТО МАГИЯ ДЛЯ ВЕКТОРА, КОТОРЫЙ ИЩЕТ НА СКИНЕ СТАТИЧНЫЕ ОБЪЕКТЫ
+        Vector3 tmp = new Vector3(vector3Pos);
+        tmp.mul(getCamera().view);
+        System.out.println(tmp.x + " " + tmp.y);
+        System.out.println(inventoryIcon.getX() + " " + inventoryIcon.getY());
+
         try {
             currentActor = (BaseActor) hit(vector3Pos.x, vector3Pos.y, true);
                 protagonist.doAction(currentActor);

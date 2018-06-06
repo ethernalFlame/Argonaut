@@ -15,6 +15,6 @@ public class Chest extends BaseActor {
 
     @Override
     public void doAction() {
-        System.out.println("Я СУНДУК");
+
     }
 }

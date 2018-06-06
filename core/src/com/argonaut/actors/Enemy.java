@@ -78,7 +78,6 @@ public class Enemy extends BaseActor {
     }
 
     private void attack(Protagonist protagonist) {
-        System.out.println("attack!!!!!!1");
         protagonist.setHp(protagonist.getHp() - damage);
         if (protagonist.getHp()<=0)
             protagonist.dispose();
