@@ -24,7 +24,9 @@ import java.util.ArrayList;
 
 public class GameScreen extends Stage implements Screen {
     private static final int cameraMovesPerSecond = 30;
-    float x = 0, y = 0, aspect, offsetX, offsetY, toPointX, toPointY, cameraHeight, cameraWidth;
+    private static final float CAMERA_WIDTH = 384;
+
+    float x = 0, y = 0, aspect, offsetX, offsetY;
     Vector3 vector3Pos = new Vector3();
     BaseActor currentActor;
     Tile[][] tiles;
@@ -53,7 +55,7 @@ public class GameScreen extends Stage implements Screen {
                 addActor(tiles[i][j]);
             }
         }
-        protagonist = new Protagonist(0,0, 64, 64, 64);
+        protagonist = new Protagonist(64, 64, 64, 64, 64);
         addActor(protagonist);
         enemies = new ArrayList<Enemy>();
         enemies.add(new Enemy(256,256,64,64, protagonist));
@@ -69,6 +71,9 @@ public class GameScreen extends Stage implements Screen {
         }
         inventoryIcon = new InventoryIcon(50,50,30,30);
         addActor(inventoryIcon);
+
+        x = protagonist.getX();
+        y = protagonist.getY();
         getCamera().position.set(x, y, 0);
     }
 
@@ -125,14 +130,14 @@ public class GameScreen extends Stage implements Screen {
     @Override
     public void resize(int width, int height) {
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-        getCamera().viewportWidth = 384;
-        getCamera().viewportHeight = 384 / aspect;
-        inventoryIcon.setX(getCamera().viewportWidth/2 - 30);
-        inventoryIcon.setY(getCamera().viewportHeight/2 - 30);
+        getCamera().viewportWidth = CAMERA_WIDTH;
+        getCamera().viewportHeight = CAMERA_WIDTH / aspect;
 
+        inventoryIcon.setX(getCamera().viewportWidth / 2 - inventoryIcon.getWidth());
+        inventoryIcon.setY(getCamera().viewportHeight / 2 - inventoryIcon.getHeight());
 
-        inventoryIcon.inventoryInterface.setX(getCamera().viewportWidth/2 - 96);
-        inventoryIcon.inventoryInterface.setY(getCamera().viewportHeight/2 - 384);
+        inventoryIcon.inventoryInterface.setX(getCamera().viewportWidth / 2 - inventoryIcon.inventoryInterface.getWidth());
+        inventoryIcon.inventoryInterface.setY(getCamera().viewportHeight / 2 - inventoryIcon.inventoryInterface.getHeight());
     }
 
     @Override
