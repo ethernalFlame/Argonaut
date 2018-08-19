@@ -1,5 +1,6 @@
 package com.argonaut;
 
+import com.argonaut.utils.ObjectProperties;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,13 +16,23 @@ public abstract class BaseActor extends Actor {
     protected TextureRegion region;
     protected boolean isOccupied = false, isStatic;
 
-    public BaseActor(Texture texture, float x, float y, float width, float height) {
+    public BaseActor(Texture texture, float x, float y) {
         this.texture = texture;
         region = new TextureRegion(texture);
         this.setX(x);
         this.setY(y);
-        this.setWidth(width);
-        this.setHeight(height);
+        this.setWidth(ObjectProperties.getObjectWidth());
+        this.setHeight(ObjectProperties.getObjectWidth());
+        this.setOriginX(0);
+        this.setOriginY(0);
+    }
+
+    public BaseActor(TextureRegion textureRegion, float x, float y) {
+        region = textureRegion;
+        this.setX(x);
+        this.setY(y);
+        this.setWidth(ObjectProperties.getObjectWidth());
+        this.setHeight(ObjectProperties.getObjectWidth());
         this.setOriginX(0);
         this.setOriginY(0);
     }

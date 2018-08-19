@@ -13,8 +13,8 @@ public class Enemy extends BaseActor {
     private Protagonist protagonist;
     private Texture hpLine;
 
-    public Enemy(float x, float y, float width, float height, Protagonist protagonist) {
-        super(new Texture("enemy_test.png"), x, y, width, height);
+    public Enemy(float x, float y, Protagonist protagonist) {
+        super(new Texture("enemy_test.png"), x, y);
         this.protagonist = protagonist;
         setOccupied(true);
         hp = 100;

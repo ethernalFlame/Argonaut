@@ -8,11 +8,11 @@ import com.badlogic.gdx.graphics.Texture;
  */
 
 public class Tile extends BaseActor implements Cloneable{
-    public Tile(Texture texture, float x, float y, float width, float height) {
-        super(texture, x, y, width, height);
+    public Tile(Texture texture, float x, float y) {
+        super(texture, x, y);
     }
     public Tile clone(){
-        return new Tile(this.texture, getX(), getY(), getWidth(), getHeight());
+        return new Tile(this.texture, getX(), getY());
     }
 
     @Override

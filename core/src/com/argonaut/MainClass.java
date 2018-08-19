@@ -13,10 +13,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class MainClass extends Game implements InputProcessor {
-	SpriteBatch batch;
-	Texture img;
-	OrthographicCamera camera;
-	float x = 0, y = 0, aspect;
 
 	@Override
 	public void create () {
@@ -39,9 +35,6 @@ public class MainClass extends Game implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		Vector3 vector2 = camera.unproject(new Vector3(screenX, screenY, 0));
-		System.out.println("x: " + screenX + " y: " + screenY);
-		System.out.println("matrix x: " + vector2.x + " y: " + vector2.y + " z: " + vector2.z	);
 		return false;
 	}
 

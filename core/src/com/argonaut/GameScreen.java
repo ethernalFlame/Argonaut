@@ -3,6 +3,7 @@ package com.argonaut;
 import com.argonaut.actors.Chest;
 import com.argonaut.actors.Enemy;
 import com.argonaut.actors.InventoryIcon;
+import com.argonaut.items.LevelOneArgonautArmor;
 import com.argonaut.actors.Protagonist;
 import com.argonaut.actors.Tile;
 import com.argonaut.actors.Wall;
@@ -23,6 +24,9 @@ import java.util.ArrayList;
  */
 
 public class GameScreen extends Stage implements Screen {
+    // TODO: 07.06.2018 надо разделить touchdown и touchup. Сохраняем объект из тачдауна,
+    // потом если совпадает в тачдаун - исполняем уже действие
+
     private static final int cameraMovesPerSecond = 30;
     private static final float CAMERA_WIDTH = 384;
 
@@ -38,27 +42,27 @@ public class GameScreen extends Stage implements Screen {
     ArrayList<Enemy> enemies;
     ArrayList<Wall> walls;
     InventoryIcon inventoryIcon;
+    LevelOneArgonautArmor levelOneArgonautArmor;
 
     public GameScreen(Game game) {
-
 
     }
 
     @Override
     public void show() {
-        wall = new Wall(new Texture("wall_test.png"), 0, 64, 64,64);
-        chest = new Chest(144,144,64,64);
+        wall = new Wall(new Texture("wall_test.png"), 0, 64);
+        chest = new Chest(144,144);
         aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-        tiles = TileFactory.getTiles(10, 10, new Tile(new Texture("tile_clear.png"), 0, 0, 64, 64));
+        tiles = TileFactory.getTiles(10, 10, new Tile(new Texture("tile_clear.png"), 0, 0));
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
                 addActor(tiles[i][j]);
             }
         }
-        protagonist = new Protagonist(64, 64, 64, 64, 64);
+        protagonist = Protagonist.getProtoganist();
         addActor(protagonist);
         enemies = new ArrayList<Enemy>();
-        enemies.add(new Enemy(256,256,64,64, protagonist));
+        enemies.add(new Enemy(256,256, protagonist));
         chest.setX(tiles[0][2].getX());
         chest.setY(tiles[0][2].getY());
         addActor(chest);
@@ -74,6 +78,9 @@ public class GameScreen extends Stage implements Screen {
 
         x = protagonist.getX();
         y = protagonist.getY();
+
+        levelOneArgonautArmor = new LevelOneArgonautArmor(180, 180);
+        addActor(levelOneArgonautArmor);
         getCamera().position.set(x, y, 0);
     }
 
@@ -95,6 +102,7 @@ public class GameScreen extends Stage implements Screen {
             walls.get(i).draw(getBatch(),delta);
         }
         chest.draw(getBatch(), delta);
+
         getBatch().end();
         updateCameraPos(x,y);
         getCamera().position.set(x, y, 0);
@@ -102,7 +110,9 @@ public class GameScreen extends Stage implements Screen {
         //ЭТО ШОБ НЕ В МИРОВЫХ КООРДИНАТАХ, А В СКРИНОВЫХ
         getBatch().setProjectionMatrix(getCamera().projection);
         getBatch().begin();
+
         inventoryIcon.draw(getBatch(), delta);
+        levelOneArgonautArmor.draw(getBatch(), delta);
         getBatch().end();
 
     }
@@ -137,12 +147,14 @@ public class GameScreen extends Stage implements Screen {
         inventoryIcon.setY(getCamera().viewportHeight / 2 - inventoryIcon.getHeight());
 
         inventoryIcon.inventoryInterface.setX(getCamera().viewportWidth / 2 - inventoryIcon.inventoryInterface.getWidth());
-        inventoryIcon.inventoryInterface.setY(getCamera().viewportHeight / 2 - inventoryIcon.inventoryInterface.getHeight());
+        inventoryIcon.inventoryInterface.setY(getCamera().viewportHeight / 2 - inventoryIcon.inventoryInterface.getHeight() - 30);
+
+        levelOneArgonautArmor.setX(getCamera().viewportWidth / 2 - levelOneArgonautArmor.getWidth() - 9);
+        levelOneArgonautArmor.setY(getCamera().viewportHeight / 2 - levelOneArgonautArmor.getHeight() - 38);
     }
 
     @Override
-    public void pause() {
-        System.out.println("PAUSE");
+    public void pause(){
     }
 
     @Override
@@ -164,8 +176,6 @@ public class GameScreen extends Stage implements Screen {
         //ЭТО МАГИЯ ДЛЯ ВЕКТОРА, КОТОРЫЙ ИЩЕТ НА СКИНЕ СТАТИЧНЫЕ ОБЪЕКТЫ
         Vector3 tmp = new Vector3(vector3Pos);
         tmp.mul(getCamera().view);
-        System.out.println(tmp.x + " " + tmp.y);
-        System.out.println(inventoryIcon.getX() + " " + inventoryIcon.getY());
 
         try {
             currentActor = (BaseActor) hit(tmp.x, tmp.y, true);

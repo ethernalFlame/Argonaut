@@ -18,7 +18,7 @@ public class WallFactory {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
                 if (i == 0 || i == tiles.length - 1 || j == 0 || j == tiles[0].length - 1)
-                    walls.add(new Wall(new Texture("wall_test.png"), tiles[i][j].getX(),tiles[i][j].getY(), tiles[i][j].getWidth(), tiles[i][j].getHeight()));
+                    walls.add(new Wall(new Texture("wall_test.png"), tiles[i][j].getX(),tiles[i][j].getY()));
             }
         }
         return walls;

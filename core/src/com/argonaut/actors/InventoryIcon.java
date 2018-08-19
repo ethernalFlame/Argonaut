@@ -12,8 +12,10 @@ public class InventoryIcon extends BaseActor {
     public InventoryInterface inventoryInterface;
 
     public InventoryIcon(float x, float y, float width, float height) {
-        super(new Texture("inventory_icon.png"), x, y, width, height);
-        this.inventoryInterface = new InventoryInterface(new Texture("inventory.png"),0,0, 96, 384);
+        super(new Texture("inventory_icon.png"), x, y);
+        setWidth(width);
+        setHeight(height);
+        this.inventoryInterface = new InventoryInterface(new Texture("inventory.png"),0,0, 32, 384);
         isStatic = true;
     }
 

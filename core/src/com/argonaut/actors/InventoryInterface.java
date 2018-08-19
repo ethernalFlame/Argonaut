@@ -11,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 public class InventoryInterface extends BaseActor{
     public boolean interfaceFlag = false;
     public InventoryInterface(Texture texture, float x, float y, float width, float height) {
-        super(texture, x, y, width, height);
+        super(texture, x, y);
+        setWidth(width);
+        setHeight(height);
         isStatic = true;
     }
 
@@ -22,7 +24,9 @@ public class InventoryInterface extends BaseActor{
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (interfaceFlag)
+        if (interfaceFlag){
         super.draw(batch, parentAlpha);
+
+        }
     }
 }

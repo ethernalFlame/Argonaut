@@ -18,7 +18,7 @@ public class TileFactory {
         Tile[][] tiles = new Tile[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-              tiles[i][j] = new Tile(tile.getTexture(), x, y, tile.getWidth(), tile.getHeight());
+              tiles[i][j] = new Tile(tile.getTexture(), x, y);
               x+=tile.getWidth();
             }
             y+=tile.getHeight();

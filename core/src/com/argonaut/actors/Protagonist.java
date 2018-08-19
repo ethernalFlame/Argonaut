@@ -1,18 +1,28 @@
 package com.argonaut.actors;
 
 import com.argonaut.BaseActor;
+import com.argonaut.Item;
+import com.argonaut.items.Wearable;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+
+import java.util.ArrayList;
 
 
 public class Protagonist extends BaseActor {
     private float range;
-    private float hp, damage;
+    public float hp, damage, greenHp, greenDamage;
     private boolean turnEnd = false;
+    private static Protagonist protagonist;
+    private ArrayList<Item> items;
 
-
-    public Protagonist(float x, float y, float width, float height, float range) {
-        super(new Texture("argonaut_hero.png"), x, y, width, height);
+    public static Protagonist getProtoganist(){
+        if (protagonist == null)
+            protagonist = new Protagonist(64, 64, 64);
+        return protagonist;
+    }
+    private Protagonist(float x, float y, float range) {
+        super(new Texture("argonaut_hero.png"), x, y);
         this.range = range;
         setOccupied(true);
         hp = 100;
@@ -74,6 +84,10 @@ public class Protagonist extends BaseActor {
         if (enemy.getHp() <= 0){
             }
         turnEnd = true;
+    }
+
+    public void equip(Wearable wearable){
+        wearable.addStats();
     }
 
         /*АЛГОРИТМ ПОИСКА ПУТИ:

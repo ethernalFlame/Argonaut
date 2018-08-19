@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
  */
 
 public class Wall extends BaseActor {
-    public Wall(Texture texture, float x, float y, float width, float height) {
-        super(texture, x, y, width, height);
+    public Wall(Texture texture, float x, float y) {
+        super(texture, x, y);
         this.setOccupied(true);
     }
 
