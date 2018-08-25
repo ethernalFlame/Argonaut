@@ -1,7 +1,7 @@
 package com.argonaut.items;
 
 import com.argonaut.Item;
-import com.argonaut.actors.Protagonist;
+import com.argonaut.actors.mobs.Protagonist;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

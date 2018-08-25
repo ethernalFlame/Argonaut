@@ -1,7 +1,9 @@
-package com.argonaut.actors;
+package com.argonaut.actors.mobs;
 
 import com.argonaut.BaseActor;
 import com.argonaut.Item;
+import com.argonaut.actors.floor.Tile;
+import com.argonaut.actors.interface_markers.Mob;
 import com.argonaut.items.Wearable;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.ArrayList;
 
 
-public class Protagonist extends BaseActor {
+public class Protagonist extends BaseActor implements Mob {
     private float range;
     public float hp, damage, greenHp, greenDamage;
     private boolean turnEnd = false;

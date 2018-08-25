@@ -1,9 +1,7 @@
 package com.argonaut.factories;
 
-import com.argonaut.actors.Tile;
-import com.badlogic.gdx.graphics.Texture;
+import com.argonaut.actors.floor.Tile;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 /**
  * Created by vladi on 08.02.2018.

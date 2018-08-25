@@ -1,13 +1,14 @@
-package com.argonaut.actors;
+package com.argonaut.actors.floor;
 
 import com.argonaut.BaseActor;
+import com.argonaut.actors.interface_markers.Floor;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Created by vladi on 08.02.2018.
  */
 
-public class Tile extends BaseActor implements Cloneable{
+public class Tile extends BaseActor implements Cloneable, Floor {
     public Tile(Texture texture, float x, float y) {
         super(texture, x, y);
     }

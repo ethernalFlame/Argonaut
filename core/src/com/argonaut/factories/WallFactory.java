@@ -1,7 +1,7 @@
 package com.argonaut.factories;
 
-import com.argonaut.actors.Tile;
-import com.argonaut.actors.Wall;
+import com.argonaut.actors.decorations.Wall;
+import com.argonaut.actors.floor.Tile;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;

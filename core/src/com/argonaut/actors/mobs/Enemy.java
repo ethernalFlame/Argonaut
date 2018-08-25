@@ -1,6 +1,7 @@
-package com.argonaut.actors;
+package com.argonaut.actors.mobs;
 
 import com.argonaut.BaseActor;
+import com.argonaut.actors.interface_markers.Mob;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
@@ -8,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
  * Created by vladi on 12.02.2018.
  */
 
-public class Enemy extends BaseActor {
+public class Enemy extends BaseActor implements Mob {
     private float hp, damage, hpPosX, hpPosY, hpAspect;
     private Protagonist protagonist;
     private Texture hpLine;

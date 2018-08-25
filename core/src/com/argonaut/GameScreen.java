@@ -1,14 +1,14 @@
 package com.argonaut;
 
-import com.argonaut.actors.Chest;
-import com.argonaut.actors.Enemy;
-import com.argonaut.actors.InventoryIcon;
-import com.argonaut.items.LevelOneArgonautArmor;
-import com.argonaut.actors.Protagonist;
-import com.argonaut.actors.Tile;
-import com.argonaut.actors.Wall;
+import com.argonaut.actors.decorations.Chest;
+import com.argonaut.actors.decorations.Wall;
+import com.argonaut.actors.floor.Tile;
+import com.argonaut.actors.mobs.Enemy;
+import com.argonaut.actors.mobs.Protagonist;
+import com.argonaut.actors.ui.InventoryIcon;
 import com.argonaut.factories.TileFactory;
 import com.argonaut.factories.WallFactory;
+import com.argonaut.items.LevelOneArgonautArmor;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -82,11 +82,11 @@ public class GameScreen extends Stage implements Screen {
         levelOneArgonautArmor = new LevelOneArgonautArmor(180, 180);
         addActor(levelOneArgonautArmor);
         getCamera().position.set(x, y, 0);
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.input.setInputProcessor(this);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
